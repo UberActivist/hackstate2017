@@ -33,9 +33,8 @@ class App:
         top = Toplevel()
         center(top)
         msg = Message(top, text=error)
-        msg.grid(row=0, column=0, rowspan=2)
-        button = Button(top, text="Ok", command=top.destroy)
-        button.grid(row=2, column=0)
+        msg.grid(row=0, column=0, rowspan=2, columnspan=2)
+        Button(top, text="Ok", command=top.destroy).grid(row=2, column=0)
         top.wait_window()
 
     def convert_team(self, name):
@@ -50,7 +49,7 @@ class App:
         "Mississippi State": 430, 
         "Missouri": 434,
         "South Carolina": 648, 
-        "Tennesee": 694,
+        "Tennessee": 694,
         "TSUN": 433, 
         "Texas": 697, 
         "Vanderbilt": 736 }
@@ -58,28 +57,37 @@ class App:
 
 
     def get_matchup_input(self):
-        Teams = ["Alabama", "Arkansas", "Auburn", "Florida", "Georgia", "Kentucky", "LSU" ,"Mississippi State", "Missouri", "South Carolina", "Tennesee", "TSUN", "Texas", "Vanderbilt" ]
+        Teams = ["Alabama", "Arkansas", "Auburn", "Florida", "Georgia", "Kentucky", "LSU" ,"Mississippi State", "Missouri", "South Carolina", "Tennessee", "TSUN", "Texas", "Vanderbilt" ]
         top = Toplevel()
         center(top)
         top.title = "Pick a Team"
         teampick1 = StringVar()
         teampick2 = StringVar()
         Label(top, text="Please choose 2 teams to match up.").grid(column=0, row=0, columnspan=2)
-        Label(top, text="First Team").grid(row=1, column=0)
-        Label(top, text="First Team").grid(row=2, column=0)
+        Label(top, text="Team 1").grid(row=1, column=0)
+        Label(top, text="Team 2").grid(row=3, column=0)
         pick_one = ttk.Combobox(top, textvariable = teampick1, state="readonly")
         pick_one["values"] = Teams
+        Label(top, text="vs").grid(row=2, column=1)
         pick_two = ttk.Combobox(top, textvariable = teampick2, state="readonly")
         pick_two["values"] = Teams
         pick_one.grid(column=1, row=1)
-        pick_two.grid(column=1, row=2)
+        pick_two.grid(column=1, row=3)
         button = Button(top, text="Pick", command=top.destroy)
-        button.grid(column=0, row=3, columnspan=2)
+        button.grid(column=0, row=4, columnspan=2)
         root.wait_window(top)
         if (teampick1.get() == teampick2.get()) or (teampick1.get() == '' or teampick2.get() == ''):
             self.give_error("Please choose valid teams. Both teams must be picked, and both teams cannot be the same team.")
             return self.get_matchup_input()
         return teampick1.get(), teampick2.get()
+
+    def return_result(self, result, isEnd=False):
+        top = Toplevel()
+        center(top)
+        Message(top, text=result).grid(column=0, row=0, columnspan=2)
+        Button(top, text="Ok", command=top.destroy).grid(column=0, row=1)
+        if isEnd:
+            Button(top, text="Exit", command=self.master.destroy).grid(column=1, row=1)
 
 def center(win):
     win.update_idletasks()
@@ -91,6 +99,8 @@ def center(win):
 
 root = Tk()
 root.title("CFB Outcome Predicter")
-App(root)
+windows = App(root)
+
+windows.return_result("This is a test response window for general use.", True)
 
 root.mainloop()
